@@ -44,7 +44,7 @@ include('./header.php');
                           <th>Address</th>
                           <th>Contact Number</th>
                           <th>Email</th>
-                          <th><center>Action</th>
+                          <th><center>Action</center></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -70,7 +70,7 @@ include('./header.php');
 						  $address =$row1a['address'];
 						  $email =$row1a['email'];
 						  $contact =$row1a['contact'];
-					  }
+					  
 						  
 						echo '<tr>';
                         echo '  <td>'.$invoice.'</td>';
@@ -80,6 +80,7 @@ include('./header.php');
                         echo '  <td>'.$email.'</td>';
                         echo '  <td><center><input type="button" value="View Purchase Items" class="btn btn-primary" onclick="window.location=\'view_items.php?id='.$user.'&invoice='.$invoice.'\'"></td>';
                         echo '</tr>';
+            }
 					  }
 					  }
 					  
