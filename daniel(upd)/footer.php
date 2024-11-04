@@ -92,8 +92,7 @@ window.onclick = function(event) {
 }
 </script>
     <!-- Footer Start -->
-    <div class="container-fluid bg-dark text-secondary " style="bottom:0;position:fixed;margin-left:-0px;padding:10px;padding-bottom:0px !important;background:">
-		&copy; <a class="text-primary" href="#"></a> All Rights Reserved - Daniel and Marilyn's General Merchandise <?php echo date('Y'); ?></p>
+    <div class="container-fluid bg-dark text-secondary " style="bottom:0;position:fixed;margin-left:-0px;padding:10px;padding-bottom:0px !important;background:">		&copy; <a class="text-primary" href="#"></a> All Rights Reserved - Daniel and Marilyn's General Merchandise <?php echo date('Y'); ?></p>
     </div>
     <!-- Footer End -->
 

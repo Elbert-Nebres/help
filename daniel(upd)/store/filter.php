@@ -87,7 +87,7 @@ include('./header.php');
 					  
 					  <br>
 					  
-                         <table id="datatable" class="table table-striped table-bordered" style="width:100%;border:1px solid #00">
+                         <table id="datatable" class="table table-striped table-bordered" style="width:100%;border:1px solid 00">
                       <thead>
                         <tr>
                           <th>Invoice Number</th>

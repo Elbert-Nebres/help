@@ -180,24 +180,29 @@ include('./header.php');
 					?>
 					</table>
 					
-    <script type="text/javascript">//<![CDATA[
- 
-  <script>
-$('#datatable').DataTable({
-	    responsive: true,
-		dom: 'Bfrtip',
-		buttons: [
-    { extend: 'copy', className: 'btn btn-primary', exportOptions: { columns: ':not(:last)' } },
-    { extend: 'excel', className: 'btn btn-primary', exportOptions: { columns: ':not(:last)' } },
-    { extend: 'pdf', className: 'btn btn-primary', exportOptions: { columns: ':not(:last)' } },
-    { extend: 'print', className: 'btn btn-primary', exportOptions: { columns: ':not(:last)' } }
-	], initComplete: function () {
-				var btns = $('.dt-button');
-				btns.addClass('btn btn-success sp');
-				btns.removeClass('dt-button');
-        }
-        });
-		</script>
+<form class="form-horizontal form-label-left" action="addproductexec.php" method="POST" enctype="multipart/form-data">
+  <!-- Fields for item details -->
+</form>
+
+<script>
+  $(document).ready(function() {
+    $('#datatable').DataTable({
+      responsive: true,
+      dom: 'Bfrtip',
+      buttons: [
+        { extend: 'copy', className: 'btn btn-primary' },
+        { extend: 'excel', className: 'btn btn-primary' },
+        { extend: 'pdf', className: 'btn btn-primary' },
+        { extend: 'print', className: 'btn btn-primary' }
+      ],
+      initComplete: function() {
+        var btns = $('.dt-button');
+        btns.addClass('btn btn-success sp');
+      }
+    });
+  });
+</script>
+
   
 <hr>
 

@@ -168,25 +168,7 @@ reader.readAsDataURL(file);});
                         <label class="control-label col-md-3 col-sm-3 col-xs-3">Catergory</label>
                         <div class="col-md-9 col-sm-9 col-xs-9">
 						<select class="form-control" name="category">
-							<option></option>
-							<option>Processors</option>
-<option>Motherboards</option>
-<option>CPU Fans</option>
-<option>RAM</option>
-<option>Hard drives</option>
-<option>Solid States</option>
-<option>Power Supply</option>
-<option>Case</option>
-<option>Case Fans</option>
-<option>Monitors</option>
-<option>Keyboards</option>
-<option>Mouse</option>
-<option>AVR</option>
-<option>Webcam</option>
-<option>Speakers</option>
-<option>Cables</option>
-<option>Routers</option>
-						</select>
+			
                         </div>
                       </div>
                       <div class="form-group row">

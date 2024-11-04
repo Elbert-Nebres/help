@@ -4,7 +4,7 @@ session_start();
 
 // Initialize variables
 $profile = 'default_profile.png'; // Default profile image
-$name = 'Guest'; // Default name
+$name = ''; // Default name
 
 if(isset($_SESSION['username']))  {
     $username = $_SESSION['username'];

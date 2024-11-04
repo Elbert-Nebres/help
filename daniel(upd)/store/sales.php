@@ -75,7 +75,7 @@ include('./header.php');
       <div class="card-body">
         <h5  style="color:#000" class="card-title">Filter by Month</h5>
 		  <form action="filter.php" method="POST">
-		  <table width="100%">
+		  <table width="125%">
 			<tr>
 				<td width="50%">Start Month<input type="month" name="start_date" class="form-control" required></td>
 				<td width="50%">End Month<input type="month" name="end_date" class="form-control" required></td>
@@ -101,97 +101,121 @@ include('./header.php');
       </div>
     </div>
   </div>
-</div>
-					  
-					  
-					  <br>
+</div>		  
+ <br>
                          <table id="datatable" class="table table-striped table-bordered" style="width:100%">
-                      <thead>
-                        <tr>
-                          <th>Invoice Number</th>
-                          <th>Name</th>
-                          <th>Contact Number</th>
-                          <th>Address</th>
-                          <th>Item/Quantity</th>
-                          <th>Total Price</th>
-                          <th>Date Purchased</th>
-                        </tr>
-                      </thead>
+                      
                       <tbody>
-					<?php
-					
-					include('../connect.php');
-					$total = 0;
-					$username =$_SESSION['username'];
-					$result1 = $conn->query("SELECT * FROM cart WHERE status = 'Approved' GROUP BY invoice ORDER BY timestamp DESC");
-					  while($row1 = $result1->fetch_assoc()) {
-						  $product = $row1['product'];
-						  $date = $row1['timestamp'];
-						  $name = $row1['name'];
-						  $invoice = $row1['invoice'];
-						  $contact = $row1['contact'];
-						  $address = $row1['address'];
-						  echo '<tr>';
-                        echo '  <td>'.$invoice.'<span style="color:#FFF">a</span></td>';
-                        echo '  <td>'.$name.'</td>';
-                        echo '  <td>'.$contact.'</td>';
-                        echo '  <td>'.$address.'</td>';
-						echo '<td>';
-						//check item from invoice
-						$invoice = $row1['invoice'];
-						$t = 0;
-						$result1a = $conn->query("SELECT * FROM cart WHERE invoice = '$invoice'");
-						while($row1a = $result1a->fetch_assoc()) {
-						$prd = $row1a['product'];
-							$result = $conn->query("SELECT * FROM product WHERE id = '$prd' ");
-								while($row = $result->fetch_assoc()) {
-									$item =$row['item'];
-									$description =$row['description'];
-									$price = $row['price'];
-									$type_quantity =$row['type_quantity'];
-									$quantity = $row1['quantity'];
-									$p = $quantity * $price;
-									$date = date('F d, Y',strtotime($date));
-									echo '<li>'.$item.' - '.$quantity.' '.$type_quantity.'</li>';
-							}
-						 $t += $p;
-					  }
-					  echo '</td>';
-                       
-                       
-                        echo '  <td>'.number_format($t,2).'</td>';
-						//end check
-                        echo '  <td>'.$date.'</td>';
-                        echo '</tr>';
-						//echo $t;
-						if(isset($p)) {
-								$total += $p;
-						} else {
-						$total = 0;
-						}
-					  }
-					  
-					?>
-					</table>
-					
-    <script type="text/javascript">//<![CDATA[
- 
-  <script>
-$('#datatable').DataTable({
-	    responsive: true,
-		dom: 'Bfrtip',
-		buttons: [
-    { extend: 'copy', className: 'btn btn-primary', exportOptions: { columns: ':not(:last)' } },
-    { extend: 'excel', className: 'btn btn-primary', exportOptions: { columns: ':not(:last)' } },
-    { extend: 'pdf', className: 'btn btn-primary', exportOptions: { columns: ':not(:last)' } },
-    { extend: 'print', className: 'btn btn-primary', exportOptions: { columns: ':not(:last)' } }
-	], initComplete: function () {
-				var btns = $('.dt-button');
-				btns.addClass('btn btn-success sp');
-				btns.removeClass('dt-button');
+                      <?php
+$conn = mysqli_connect("localhost", "root", "", "daniel");
+
+// First, let's check the table structure
+$tableCheck = $conn->query("DESCRIBE cart");
+echo "<!-- Table Structure: -->";
+while($field = $tableCheck->fetch_assoc()) {
+    echo "<!-- Field: " . $field['Field'] . " -->";
+}
+
+// Modified query to show all fields
+$result1 = $conn->query("SELECT * FROM cart WHERE status = 'Approved' GROUP BY invoice ORDER BY timestamp DESC");
+
+// Debug query
+if (!$result1) {
+    echo "Query Error: " . $conn->error;
+}
+
+?>
+<table id="datatable" class="table table-striped table-bordered" style="width:100%">
+    <thead>
+        <tr>
+            <th>Invoice Number</th>
+            <th>Name</th>
+            <th>Contact Number</th>
+            <th>Address</th>
+            <th>Item/Quantity</th>
+            <th>Total Price</th>
+            <th>Date Purchased</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        $total = 0;
+        while ($row1 = $result1->fetch_assoc()) {
+            // Debug row data
+            echo "<!-- Row Data: " . print_r($row1, true) . " -->";
+            
+            echo '<tr>';
+            echo '<td>' . htmlspecialchars($row1['invoice']) . '</td>';
+            
+            // Add debug output for these fields
+            echo "<!-- Name value: " . ($row1['name'] ?? 'null') . " -->";
+            echo "<!-- Contact value: " . ($row1['contact'] ?? 'null') . " -->";
+            echo "<!-- Address value: " . ($row1['address'] ?? 'null') . " -->";
+            
+            // Output fields with fallback
+            echo '<td>' . htmlspecialchars($row1['name'] ?? '') . '</td>';
+            echo '<td>' . htmlspecialchars($row1['contact'] ?? '') . '</td>';
+            echo '<td>' . htmlspecialchars($row1['address'] ?? '') . '</td>';
+
+            // Display items
+            echo '<td><ul>';
+            $invoice = $row1['invoice'];
+            $result1a = $conn->query("SELECT * FROM cart WHERE invoice = '$invoice'");
+            $t = 0;
+
+            while ($row1a = $result1a->fetch_assoc()) {
+                $prd = $row1a['product'];
+                $product_result = $conn->query("SELECT * FROM product WHERE id = '$prd'");
+                while ($product = $product_result->fetch_assoc()) {
+                    $item = $product['item'];
+                    $price = $product['price'];
+                    $quantity = $row1a['quantity'];
+                    $p = $quantity * $price;
+                    echo '<li>' . htmlspecialchars($item) . ' - ' . $quantity . ' ' . 
+                         htmlspecialchars($product['type_quantity'] ?? 'pcs') . '</li>';
+                    $t += $p;
+                }
+            }
+            echo '</ul></td>';
+            echo '<td>₱' . number_format($t, 2) . '</td>';
+            echo '<td>' . date('F d, Y', strtotime($row1['timestamp'])) . '</td>';
+            echo '</tr>';
+
+          
         }
-        });
-		</script>
+        ?>
+  
+</table>
+
+<?php
+// Add additional debugging at the end
+echo "<!-- Connection Info: -->";
+echo "<!-- Connection Error: " . $conn->connect_error . " -->";
+echo "<!-- Connection Errno: " . $conn->connect_errno . " -->";
+?>
+          
+<form class="form-horizontal form-label-left" action="addproductexec.php" method="POST" enctype="multipart/form-data">
+  <!-- Fields for item details -->
+</form>
+<script>
+  $(document).ready(function() {
+    $('#datatable').DataTable({
+      responsive: true,
+      dom: 'Bfrtip',
+      buttons: [
+        { extend: 'copy', className: 'btn btn-primary' },
+        { extend: 'excel', className: 'btn btn-primary' },
+        { extend: 'pdf', className: 'btn btn-primary' },
+        { extend: 'print', className: 'btn btn-primary' }
+      ],
+      initComplete: function() {
+        var btns = $('.dt-button');
+        btns.addClass('btn btn-success sp');
+      }
+    });
+  });
+</script>
+
   
 <hr>
 
@@ -322,37 +346,38 @@ $('#datatable').DataTable({
 		?>
 	</tr>
 </table>
-
-
  <script>
  
-Highcharts.chart('con', {
-    data: {
-        table: 'example1'
-    },
-    chart: {
-        type: 'column'
-    },
-    title: {
-        text: 'Sales Report'
-    },
-    yAxis: {
-        allowDecimals: false,
-        title: {
-            text: 'Units'
-        }
-    },
-    tooltip: {
-        formatter: function () {
-            return '<b>' + this.series.name + '</b><br/>' + this.point.y + ' ' + this.point.name.toLowerCase();
-        }
-    }, navigation: {
-        buttonOptions: {
-            enabled: false
-        }
-    }
-});
- </script>      
+ Highcharts.chart('con', {
+            data: {
+                table: 'example1'
+            },
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Sales Report'
+            },
+            yAxis: {
+                allowDecimals: false,
+                title: {
+                    text: 'Units'
+                }
+            },
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.series.name + '</b><br/>' + this.point.y + ' ' + this.point.name.toLowerCase();
+                }
+            },
+            navigation: {
+                buttonOptions: {
+                    enabled: false
+                }
+            }
+        });
+        </script>
+
+
                       </div>
                       </div>
                     </div>
@@ -560,7 +585,15 @@ reader.readAsDataURL(file);});
     <!-- iCheck -->
     <script src="../vendors/iCheck/icheck.min.js"></script>
     <!-- Datatables -->
-	
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
+
 	
 
     <script src="../build/js/custom.min.js"></script>	

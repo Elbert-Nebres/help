@@ -1,13 +1,24 @@
 <?php
 include('./header.php');
 
-// Start session to access user data
 
 $username = $_SESSION['username'];
 
 // Fetch user details
 $result = mysqli_query($conn, "SELECT * FROM user WHERE username = '$username'");
-$user = mysqli_fetch_assoc($result);
+
+if ($result) {
+    $user = mysqli_fetch_assoc($result);
+    if (!$user) {
+        // User not found
+        echo '<script>alert("User  not found. Please log in again.");window.location="login.php"</script>';
+        exit();
+    }
+} else {
+    // Query error
+    echo '<script>alert("Error fetching user details.");window.location="login.php"</script>';
+    exit();
+}
 
 // Handling Profile Update
 if (isset($_POST['submit_profile'])) {
@@ -31,7 +42,7 @@ if (isset($_POST['submit_password'])) {
     $current_user_result = mysqli_query($conn, "SELECT password FROM login WHERE username = '$username'");
     $current_user = mysqli_fetch_assoc($current_user_result);
     
-    if ($current_user['password'] == $old_password) {
+    if ($current_user && $current_user['password'] == $old_password) {
         if ($new_password == $confirm_password) {
             mysqli_query($conn, "UPDATE login SET password = '$new_password' WHERE username = '$username'");
             echo '<script>alert("Password has been updated");window.location="profile.php"</script>';
@@ -74,7 +85,7 @@ if (isset($_POST['submit_image'])) {
                             </div>
                             <div class="form-group">
                                 <label for="address">Address</label>
-                                <input type="text" class="form-control" id="address" name="address" required value="<?php echo htmlspecialchars($user['address']); ?>">
+                                <input type="text" class="form-control" id="address" name="address" required value="<?php echo htmlspecialchars ($user['address']); ?>">
                             </div>
                             <div class="form-group">
                                 <label for="contact">Contact Number</label>
