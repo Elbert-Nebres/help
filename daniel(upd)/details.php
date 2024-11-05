@@ -3,7 +3,6 @@
 include('./header.php');
 $id = $_GET['id'];
 include('./connect.php');
-
 $result = $conn->query("SELECT * FROM product WHERE id = '$id'");
 while($row = $result->fetch_assoc()) {
 	$item = $row['item'];
@@ -11,7 +10,6 @@ while($row = $result->fetch_assoc()) {
 	$price = $row['price'];
 	$image = $row['image'];
 	$category = $row['category'];
-	$quantity  =$row['quantity'];
 	
 }
 
@@ -231,7 +229,7 @@ textarea {
                                     <i class="fa fa-minus"></i>
                                 </button>
                             </div>
-                            <input type="number" class="form-control bg-secondary border-0 text-center" value="1" name="quantity" max="<?php echo $quantity ?>">
+                            <input type="number" class="form-control bg-secondary border-0 text-center" value="1" name="quantity">
                             <div class="input-group-btn">
                                 <button class="btn btn-primary btn-plus" type="button">
                                     <i class="fa fa-plus"></i>
@@ -288,11 +286,11 @@ textarea {
                                         </div>
                                         <div class="form-group">
                                             <label for="name">Your Name *</label>
-                                            <input type="text" class="form-control" id="name" name="name" required value="<?php echo $name ?>">
+                                            <input type="text" class="form-control" id="name" name="name" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="email">Your Email *</label>
-                                            <input type="email" class="form-control" id="email" name="email" required value="<?php echo $email ?>">
+                                            <input type="email" class="form-control" id="email" name="email" required>
                                         </div>
                                         <div class="form-group mb-0">
                                             <input type="submit" value="Leave Your Review" class="btn btn-primary px-3" name="submit">
@@ -380,7 +378,7 @@ allStar.forEach((item, idx)=> {
 
 
     <!-- Products Start -->
-    <div class="container-fluid py-5" style="display:none">
+    <div class="container-fluid py-5">
         <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">You May Also Like</span></h2>
         <div class="row px-xl-5">
             <div class="col">
