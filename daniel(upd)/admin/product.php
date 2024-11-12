@@ -73,25 +73,51 @@ include('./header.php');
           $result = $conn->query("SELECT * FROM product");
           
           while ($row = $result->fetch_assoc()) {
-              $id = $row['id'];
-              $barcode = $row['barcode'];
-              $quantity = $row['quantity'];
-          
-              // Check the quantity and set the row color accordingly
+              // Extract and sanitize data
+              $id = (int)$row['id'];
+              $quantity = (int)$row['quantity'];
+              
+              // Clean and format description
+              $description = $row['description'];
+              $description = str_replace('<p>faw</p>..', '', $description); // Remove the specific pattern
+              $description = preg_replace('/<\/?p[^>]*>/', '', $description); // Remove any remaining <p> tags
+              $description = strip_tags($description); // Remove any other HTML tags
+              $description = trim($description); // Remove extra whitespace
+              
+              // Truncate description if needed
+              if (strlen($description) > 100) {
+                  $description = substr($description, 0, 100) . '...';
+              }
+              
+              // Determine row style based on quantity
               $rowStyle = ($quantity <= 5) ? 'style="background:#C9102A;color:#FFF"' : '';
               
-              echo '<tr ' . $rowStyle . '>';
-              echo '  <td><img src="' . $row['image'] . '" style="width:100px;height:100px"></td>';
-              echo '  <td>' . htmlspecialchars($row['item']) . '</td>';
-              echo '  <td>' . htmlspecialchars($row['category']) . '</td>';
-              echo '  <td>' . htmlspecialchars($row['quantity']) . '</td>';
-              echo '  <td>&#x20B1; ' . number_format($row['price'], 2) . '</td>';
-              echo '  <td>' . htmlspecialchars(substr($row['description'], 0, 100)) . '...</td>';
-              echo '  <td><center>
-                          <input type="button" value="View Product Transaction" class="btn btn-primary" onclick="window.location=\'view_transaction.php?id=' . $id . '&item=' . urlencode($row['item']) . '\'"> 
-                          <input type="button" value="Update Product" class="btn btn-primary" onclick="window.location=\'update_product.php?id=' . $id . '\'"> 
-                        </center></td>';
-              echo '</tr>';
+              // Build the table row with Bootstrap classes
+              echo '<tr ' . $rowStyle . '>
+                      <td>
+                          <img src="' . htmlspecialchars($row['image']) . '" 
+                               class="img-fluid" 
+                               style="width:100px;height:100px" 
+                               alt="' . htmlspecialchars($row['item']) . '">
+                      </td>
+                      <td>' . htmlspecialchars($row['item']) . '</td>
+                      <td>' . htmlspecialchars($row['category']) . '</td>
+                      <td>' . $quantity . '</td>
+                      <td class="text-right">&#x20B1; ' . number_format($row['price'], 2) . '</td>
+                      <td>' . htmlspecialchars($description) . '</td>
+                      <td class="text-center">
+                          <div class="btn-group-vertical w-100">
+                              <a href="view_transaction.php?id=' . $id . '&item=' . urlencode($row['item']) . '" 
+                                 class="btn btn-primary mb-2">
+                                 <i class="fa fa-eye"></i> View Transaction
+                              </a>
+                              <a href="update_product.php?id=' . $id . '" 
+                                 class="btn btn-primary">
+                                 <i class="fa fa-edit"></i> Update Product
+                              </a>
+                          </div>
+                      </td>
+                    </tr>';
               echo '<input type="hidden" value="' . $id . '" id="pp' . $id . '">';
           }
 					  
