@@ -1,435 +1,304 @@
-<?php
-include('./header.php');
-?>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-
-
-      <script type="text/javascript" src="https://rawgit.com/select2/select2/master/dist/js/select2.js"></script>
-      <link rel="stylesheet" type="text/css" href="https://rawgit.com/select2/select2/master/dist/css/select2.min.css">        <!-- page content -->
-        <div class="right_col" role="main">
-          <!-- top tiles -->
-          <div class="row" style="display: inline-block;" >
-          <div class="tile_count">
-           &nbsp;
-          </div>
-        </div>
-          <!-- /top tiles -->
-
-          <br />
-
+<?php include('./header.php'); ?>
 
 <style>
-	.nicEdit-main {
-		width:100% !important;
-	}
-	
-.ck-editor__editable_inline {
-    min-height: 200px;
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.product-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 15px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-image {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.product-info {
+    padding: 10px;
+}
+
+.product-name {
+    font-weight: bold;
+    margin: 10px 0;
+    font-size: 1.1em;
+}
+
+.product-price {
+    color: #347928;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 8px 0;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.qty-btn {
+    background: #347928;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.qty-input {
+    width: 60px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.add-to-cart-btn {
+    background: #347928;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    width: 100%;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.add-to-cart-btn:hover {
+    background: #2a6320;
+}
+
+.cart-panel {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 350px;
+    height: 100vh;
+    background: white;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.cart-title {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #347928;
+}
+
+.cart-items {
+    margin-bottom: 20px;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.cart-total {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 20px 0;
+    text-align: right;
+}
+
+.checkout-btn {
+    background: #347928;
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 4px;
+    font-size: 1.1em;
+    cursor: pointer;
+}
+
+.main-content {
+    margin-right: 350px;
+}
+
+.category-filter {
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 20px;
 }
 </style>
-              <div class="row">
 
-<?php
-if(isset($_POST['submit'])) {
-	include('../connect.php');
-	$product = $_POST['product'];
-	$quantity = $_POST['quantity'];
-	$username = $_SESSION['username'];
-	$result = $conn->query("SELECT * FROM product WHERE id = '$product'");
-	  while($row = $result->fetch_assoc()) {
-		  $price =$row['price'];
-		  $quan = $row['quantity'];
-	  }
-	  if($quantity > $quan) {
-		echo '<script>alert("You can only purchase '.$quan.' pieces of this item");window.location="pos.php";</script>';  
-	  } else {
-	  $all = $quan - $quantity;
-	  $status = 'Pending';
-	  $total = $quantity * $price;
-	  $save = $conn->query("UPDATE product SET quantity = '$all' WHERE id = '$product'");
-	  $save = $conn->query("INSERT INTO cart (product, username, status,quantity)VALUES ('$product','$username','$status','$quantity')");
-	  //echo '<script>window.location="pos_.php";</script>';
-	  }
-}
-?>
-                <div class="col-md-12 col-sm-12 " style="color:#000">
-                  <div class="x_panel">
-                    <div class="x_title">
-                      <h2>Point of Sale</h2>
-                      
-                      <div class="clearfix"></div>
+<div class="right_col" role="main">
+    <div class="main-content">
+        <!-- Category Filter -->
+        <div class="category-filter">
+            <select class="form-control" id="categoryFilter" onchange="filterProducts()">
+                <option value="">All Categories</option>
+                <option>Processors</option>
+                <option>Motherboards</option>
+                <option>CPU Fans</option>
+                <!-- Add other categories -->
+            </select>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="product-grid">
+            <?php
+            include('../connect.php');
+            $result = $conn->query("SELECT * FROM product WHERE quantity > 0");
+            while($row = $result->fetch_assoc()) {
+                ?>
+                <div class="product-card" data-category="<?php echo $row['category']; ?>">
+                    <img src="<?php echo $row['image']; ?>" class="product-image" alt="<?php echo $row['item']; ?>">
+                    <div class="product-info">
+                        <div class="product-name"><?php echo $row['item']; ?></div>
+                        <div class="product-price">₱<?php echo number_format($row['price'], 2); ?></div>
+                        <div class="stock-info">In Stock: <?php echo $row['quantity']; ?></div>
+                        <div class="quantity-controls">
+                            <button type="button" class="qty-btn" 
+                                    onclick="updateCart(<?php echo $row['id']; ?>, -1, <?php echo $row['quantity']; ?>)">-</button>
+                            <span class="qty-display" id="qty-<?php echo $row['id']; ?>">0</span>
+                            <button type="button" class="qty-btn" 
+                                    onclick="updateCart(<?php echo $row['id']; ?>, 1, <?php echo $row['quantity']; ?>)">+</button>
+                        </div>
                     </div>
-                    <div class="x_content">
-                      
-                      <div class="dashboard-widget-content" style="width:100%;overflow-x:scroll">
-					  <?php
-					  
-					  ?>
-					 <input type="button" value="Clear Items" onclick="window.location='del.php';" class="btn btn-danger" style="float:right">
-					  <form action="#" method="POST">
-					  <table width="75%">
-						<tr>
-							<td width="33%" valign="top">
-							 <select name="product" class="form-control" id="product" autofocus()>
-						<option></option>
-						<?php
-						include('../connect.php');
-					  $username =$_SESSION['username'];
-					$result = $conn->query("SELECT * FROM product ");
-					  while($row = $result->fetch_assoc()) {
-						  echo '<option value="'.$row['id'].'">'.$row['barcode'].' - '.$row['item'].'</option>';
-					  }
-						?>
-					  </select>
-							<td width="33%" valign="top"><input type="text" name="quantity" required placeholder="Quantity" class="form-control"></td>
-							</td>
-							<td width="33%" valign="top"><input type="submit" name="submit" value="Add product" class="btn btn-primary"></td>
-						</tr>
-					  </table>
-					 </form>
-                         <table  class="table table-striped table-bordered" style="width:100%">
-                      <thead>
-                        <tr>
-                          <th>Image</th>
-                          <th>Product Name</th>
-                          <th>Category</th>
-                          <th><center>Price</th>
-                          <th><center>Compatibility</th>
-                          <th><center>Quantity to Purchase</th>
-                          <th><center>Total Price</th>
-                          <th><center>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-					<?php
-					include('../connect.php');
-					$total_price = 0;
-					  $username =$_SESSION['username'];
-					$result = $conn->query("SELECT * FROM cart WHERE username = '$username' AND status = 'Pending' ");
-					  while($row = $result->fetch_assoc()) {
-						  $id =$row['id'];
-						  $product =$row['product'];
-						  $quantity = $row['quantity'];
-						  $customer = $row['customer'];
-					$result1 = $conn->query("SELECT * FROM product WHERE id = '$product'");
-					  while($row1 = $result1->fetch_assoc()) {
-						  $id_prod = $row1['id'];
-						  $item = $row1['item'];
-						  $category = $row1['category'];
-						  $price = $row1['price'];
-						  $compatibility = $row1['compatibility'];
-						  $description = $row1['description'];
-						  $image = $row1['image'];
-					  }
-						  $total = $quantity  * $price;
-						echo '<tr>';
-                        echo '  <td><img src="'.$image.'" style="width:100px;height:100px"></td>';
-                        echo '  <td>'.$item.'</td>';
-                        echo '  <td>'.$category.'</td>';
-                        echo '  <td>&#x20B1; '.number_format($price,2).'</td>';
-                        echo '  <td>'.$compatibility.'</td>';
-                        echo '  <td>'.$quantity.'</td>';
-                        echo '  <td>'.number_format($total,2).'</td>';
-                        echo '  <td><center><input type="button" value="Delete" class="btn btn-danger" onclick="window.location=\'del_cart.php?id='.$row['id'].'\'"></td>';
-                        echo '</tr>';
-						echo '<input type="hidden" value="'.$id.'" id="pp'.$id.'">';
-$id_1 = sprintf("%08d", $id_prod);
-$total_price += $total;
-echo '						<script>';
-
-  
-
-  // binds an event that will trigger a new barcode as you type
-
-echo '    JsBarcode("#bar'.$id_prod.'", "'.$id_1.'");';
-
-
-
-echo '  </script>';
-						
-					  }
-					  //check for email
-					
-					  //end check
-					?>
-                    <tr>
-						<td colspan="6" align="right">Total Price</td>
-						<td><?php echo number_format($total_price,2) ?></td>
-						<td></td>
-					</tr>
-						</table>
-						Name:
-					  <input type="text" name="name" placeholder="Customer Name" required class="form-control" value="<?php echo $_SESSION['name1'] ?>" readonly>
-					  Address:
-					  <input type="text" name="address" required placeholder="Addess" class="form-control" value="<?php echo $_SESSION['address1'] ?>" readonly>
-					  Contact Number:
-					  <input type="text" name="contact" required placeholder="Contact Number" class="form-control" value="<?php echo $_SESSION['contact1'] ?>" readonly>
-					  Email Address:
-					  <input type="text" name="email" required placeholder="Email Address" class="form-control" value="<?php echo $_SESSION['email'] ?>" readonly>
-					  Invoice Number:
-					  <input type="text" name="invoice" required placeholder="Invoice Number" class="form-control"  value="<?php echo $_SESSION['invoice1'] ?>" readonly>
-					  <br>
-						<input type="button" value="Purchase Items" onclick="window.location='purchase1.php'" class="btn btn-primary">
-                      </div>
-                    </div>
-                  </div>
                 </div>
-
-              </div>
-              <div class="row">
-
-
-<!-- The Modal -->
-<div id="myModal" class="modal">
-
-  <!-- Modal content -->
-  <div class="modal-content">
-    <div class="modal-header">
-	<h3>Fill up all fields to add an item</h2>
-      <span class="close">&times;</span>
-      
+                <?php
+            }
+            ?>
+        </div>
     </div>
-    <div class="modal-body">
-      
-					  
-              <div class="col-md-12 col-sm-12  ">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content">
-                    <br />
-				
-                    <form class="form-horizontal form-label-left" action="addproductexec.php" method="POST">
 
-                      <div class="form-group row">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-3">Item Name</label>
-                        <div class="col-md-9 col-sm-9 col-xs-9">
-                          <input type="text" class="form-control" name="item" required>
-                        </div>
-                      </div>
-                      <div class="form-group row">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-3">Description</label>
-                        <div class="col-md-9 col-sm-9 col-xs-9">
-						<div style="width:100%;border:1px solid #000">
-						<textarea name="description"  style="width:100%;height:200px !important" id="description"></textarea>
-						</div>
-                        </div>
-                      </div>
-                      <div class="form-group row">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-3">Price</label>
-                        <div class="col-md-9 col-sm-9 col-xs-9">
-                          <input type="number" class="form-control" name="price" required>
-                        </div>
-                      </div>
-                      <div class="form-group row">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-3">Product Image</label>
-                        <div class="col-md-9 col-sm-9 col-xs-9">
-                          <input type="file" class="form-control" name="image" id="image" required accept="image/png, image/gif, image/jpeg">
-						  <textarea id="img" name="img" style="display:none !important"></textarea>
-                        </div>
-                      </div>
-					  <script>
-const fileInput = document.getElementById('image');
-fileInput.addEventListener('change', (e) => {
-// get a reference to the file
-const file = e.target.files[0];
-
-// encode the file using the FileReader API
-const reader = new FileReader();
-reader.onloadend = () => {
-
-    // use a regex to remove data url part
-    const base64String = reader.result;
-        document.getElementById('img').value =reader.result; 
-    console.log(base64String);
-};
-reader.readAsDataURL(file);});
-				</script>
-                      <div class="form-group row">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-3">Catergory</label>
-                        <div class="col-md-9 col-sm-9 col-xs-9">
-						<select class="form-control" name="category">
-							<option></option>
-							<option>Processors</option>
-<option>Motherboards</option>
-<option>CPU Fans</option>
-<option>RAM</option>
-<option>Hard drives</option>
-<option>Solid States</option>
-<option>Power Supply</option>
-<option>Case</option>
-<option>Case Fans</option>
-<option>Monitors</option>
-<option>Keyboards</option>
-<option>Mouse</option>
-<option>AVR</option>
-<option>Webcam</option>
-<option>Speakers</option>
-<option>Cables</option>
-<option>Routers</option>
-						</select>
-                        </div>
-                      </div>
-                      <div class="form-group row">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-3">Compatibility</label>
-                        <div class="col-md-9 col-sm-9 col-xs-9">
-                          <select name="compatibility" required class="form-control">
-							<option></option>
-							<option>Intel</option>
-							<option>AMD</option>
-							<option>None</option>
-						  </select>
-                        </div>
-                      </div>
-					  
-                      <div class="form-group row">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-3">Quantity</label>
-                        <div class="col-md-9 col-sm-9 col-xs-9">
-                          <input type="number" class="form-control" name="quantity" required>
-                        </div>
-                      </div>
-                      <div class="ln_solid"></div>
-
-                      <div class="form-group row">
-                        <div class="col-md-9 offset-md-3">
-                          <button type="submit" class="btn btn-success" name="submit">Submit</button>
-                          <button type="button" onclick="window.location='product.php'" class="btn btn-danger">Cancel</button>
-                        </div>
-                      </div>
-
-                    </form>
-                  </div>
-                </div>
-              </div>
+    <!-- Cart Panel -->
+    <div class="cart-panel">
+        <div class="cart-title">Shopping Cart</div>
+        <div class="cart-items" id="cart-items">
+            <!-- Cart items will be loaded here dynamically -->
+        </div>
+        <div class="cart-total" id="cart-total">
+            Total: ₱0.00
+        </div>
+        <button onclick="window.location='purchase1.php'" class="checkout-btn">Checkout</button>
     </div>
-  </div>
-
 </div>
 
 <script>
-$('#product').select2({
-    placeholder: 'Select an item'
+let cart = {};
+
+// Function to update cart
+async function updateCart(productId, change, maxStock) {
+    const currentQty = cart[productId] || 0;
+    const newQty = currentQty + change;
+    
+    // Check boundaries
+    if (newQty < 0 || newQty > maxStock) return;
+    
+    try {
+        const response = await fetch('update_cart.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                quantity: newQty
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Update local cart
+            if (newQty === 0) {
+                delete cart[productId];
+            } else {
+                cart[productId] = newQty;
+            }
+            
+            // Update display
+            document.getElementById(`qty-${productId}`).textContent = newQty;
+            updateCartDisplay();
+        } else {
+            alert(data.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error updating cart');
+    }
+}
+
+// Function to update cart display
+function updateCartDisplay() {
+    fetch('get_cart.php')
+        .then(response => response.json())
+        .then(data => {
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            
+            cartItems.innerHTML = '';
+            let total = 0;
+            
+            data.items.forEach(item => {
+                const itemTotal = item.quantity * item.price;
+                total += itemTotal;
+                
+                cartItems.innerHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <div>${item.item}</div>
+                            <div>Qty: ${item.quantity}</div>
+                        </div>
+                        <div>
+                            ₱${itemTotal.toFixed(2)}
+                            <button onclick="updateCart(${item.product_id}, -${item.quantity}, ${item.max_quantity})" 
+                                    class="btn btn-sm btn-danger">×</button>
+                        </div>
+                    </div>
+                `;
+                
+                // Update quantity display
+                const qtyDisplay = document.getElementById(`qty-${item.product_id}`);
+                if (qtyDisplay) {
+                    qtyDisplay.textContent = item.quantity;
+                }
+                
+                // Update cart object
+                cart[item.product_id] = item.quantity;
+            });
+            
+            cartTotal.textContent = `Total: ₱${total.toFixed(2)}`;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error loading cart');
+        });
+}
+
+// Load cart on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateCartDisplay();
 });
-// Get the modal
-var modal = document.getElementById("myModal");
-
-// Get the button that opens the modal
-var btn = document.getElementById("myBtn");
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks the button, open the modal 
-btn.onclick = function() {
-  modal.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
-
-	$('#description').width('100%');
-	$('.nicEdit-main').width('100%');
 </script>
 
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- /page content -->
-
-        <!-- footer content -->
-        <footer>
-          <div class="pull-right">
-            Daniel and Marilyn's General Merchandise - 2024
-          </div>
-          <div class="clearfix"></div>
-        </footer>
-        <!-- /footer content -->
-      </div>
-    </div> <script>
-        ClassicEditor
-            .create( document.querySelector( '#description' ) )
-            .catch( error => {
-                console.error( error );
-            } );
-    </script>
-
-    <!-- jQuery -->
-    <script src="../vendors/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="../vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- FastClick -->
-    <script src="../vendors/fastclick/lib/fastclick.js"></script>
-    <!-- NProgress -->
-    <script src="../vendors/nprogress/nprogress.js"></script>
-    <!-- Chart.js -->
-    <script src="../vendors/Chart.js/dist/Chart.min.js"></script>
-    <!-- gauge.js -->
-    <script src="../vendors/gauge.js/dist/gauge.min.js"></script>
-    <!-- bootstrap-progressbar -->
-    <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
-    <!-- iCheck -->
-    <script src="../vendors/iCheck/icheck.min.js"></script>
-    <!-- Skycons -->
-    <script src="../vendors/skycons/skycons.js"></script>
-    <!-- Flot -->
-    <script src="../vendors/Flot/jquery.flot.js"></script>
-    <script src="../vendors/Flot/jquery.flot.pie.js"></script>
-    <script src="../vendors/Flot/jquery.flot.time.js"></script>
-    <script src="../vendors/Flot/jquery.flot.stack.js"></script>
-    <script src="../vendors/Flot/jquery.flot.resize.js"></script>
-    <!-- Flot plugins -->
-    <script src="../vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
-    <script src="../vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
-    <script src="../vendors/flot.curvedlines/curvedLines.js"></script>
-    <!-- DateJS -->
-    <script src="../vendors/DateJS/build/date.js"></script>
-    <!-- JQVMap -->
-    <script src="../vendors/jqvmap/dist/jquery.vmap.js"></script>
-    <script src="../vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
-    <script src="../vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
-    <!-- bootstrap-daterangepicker -->
-    <script src="../vendors/moment/min/moment.min.js"></script>
-    <script src="../vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
-
-    <!-- jQuery -->
-    <script src="../vendors/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap -->
-   <script src="../vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- FastClick -->
-    <script src="../vendors/fastclick/lib/fastclick.js"></script>
-    <!-- NProgress -->
-    <script src="../vendors/nprogress/nprogress.js"></script>
-    <!-- iCheck -->
-    <script src="../vendors/iCheck/icheck.min.js"></script>
-    <!-- Datatables -->
-    <script src="../vendors/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="../vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-    <script src="../vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="../vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
-    <script src="../vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
-    <script src="../vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
-    <script src="../vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
-    <script src="../vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-    <script src="../vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-    <script src="../vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="../vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-    <script src="../vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
-    <script src="../vendors/jszip/dist/jszip.min.js"></script>
-    <script src="../vendors/pdfmake/build/pdfmake.min.js"></script>
-    <script src="../vendors/pdfmake/build/vfs_fonts.js"></script>
-    <!-- Custom Theme Scripts -->
-    <script src="../build/js/custom.min.js"></script>
-	
-  </body>
-</html>
+<?php include('./footer.php'); ?>
