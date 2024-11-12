@@ -194,16 +194,6 @@ textarea {
     background: rgba(255,255,255,0.9) !important;
 }
 
-/* You May Also Like Section */
-.related-carousel .product-item {
-    margin: 10px;
-    background: #fff !important;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border: none !important;
-}
-
 /* Product Image Container */
 .product-img {
     width: 100%;
@@ -286,6 +276,34 @@ textarea {
         width: 70% !important;
         height: 70% !important;
     }
+}
+
+/* Add these styles to your existing <style> section */
+.carousel-inner .carousel-item {
+    height: 400px; /* Adjust this value as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+}
+
+.carousel-inner .carousel-item img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain;
+}
+
+/* Optional: Adjust carousel control buttons */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 10%;
+}
+
+.carousel-control-prev i,
+.carousel-control-next i {
+    color: #347928 !important;
 }
 </style>
     <!-- Shop Detail Start -->
@@ -548,53 +566,6 @@ allStar.forEach((item, idx)=> {
         </div>
     </div>
     <!-- Shop Detail End -->
-
-
-    <!-- Products Start -->
-    <div class="container-fluid py-5">
-        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">You May Also Like</span></h2>
-        <div class="row px-xl-5">
-            <div class="col">
-                <div class="owl-carousel related-carousel">
-				
-          <?php
-		include('./connect.php');
-		$result = $conn->query("SELECT * FROM product ORDER BY ID DESC LIMIT 10");
-		while($row = $result->fetch_assoc()) {
-		  ?>
-                    <div class="product-item bg-light">
-                        <div class="product-img position-relative overflow-hidden">
-                            <img class="img-fluid w-100" src="<?php echo $row['image'] ?>" alt="">
-                            <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href="add_cart.php?id=<?php echo $row['id'] ?>"><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href="add_heart.php?id=<?php echo $row['id'] ?>"><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href="details.php?id=<?php echo $row['id'] ?>"><i class="fa fa-search"></i></a>
-                            </div>
-                        </div>
-                        <div class="text-center py-4">
-                            <a class="h6 text-decoration-none text-truncate" href=""><?php echo $row['item'] ?></a>
-                            <div class="d-flex align-items-center justify-content-center mt-2">
-                                <h5>₱<?php echo number_format($row['price'],2) ?></h5></h6>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-center mb-1">
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                            
-                            </div>
-                        </div>
-                    </div>
-					<?php
-		}
-					?>
-                  
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Products End -->
 
 <?php
 include('./footer.php');

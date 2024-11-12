@@ -99,6 +99,59 @@ h4 {
 }
 
 .step.completed
+
+/* Add or update these styles in your <style> section */
+.align-middle img {
+    width: 80px !important; /* Increased from 50px */
+    height: 80px !important;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    padding: 5px;
+}
+
+/* Update the table cell styling */
+.table td.align-middle {
+    vertical-align: middle;
+    text-align: center;
+    height: 100px;
+}
+
+/* Update these styles in your <style> section */
+
+/* Product Image Container */
+.table td.align-middle {
+    vertical-align: middle !important;
+    text-align: center;
+    height: 100px;
+    padding: 10px;
+}
+
+/* Product Image Styling */
+.table td.align-middle img {
+    width: 80px !important; /* Increased from 50px */
+    height: 80px !important;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    border-radius: 8px;
+    padding: 5px;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Table Styling */
+.table {
+    border-collapse: separate;
+    border-spacing: 0 5px;
+}
+
+.table tbody tr {
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Update the image in the PHP section */
 </style>
     <!-- Breadcrumb Start -->
     <div class="container-fluid">
@@ -121,23 +174,7 @@ h4 {
             <div class="col-lg-12 table-responsive mb-5">
 			<!-- start -->
 	
-<div class="container">
-    <h4>Multi Step Form</h4>
-    <div class="stepper">
-        <div class="step completed">
-            <div class="step-icon">1</div>
-        </div>
-        <div class="step completed">
-            <div class="step-icon">2</div>
-        </div>
-        <div class="step">
-            <div class="step-icon">3</div>
-        </div>
-        <div class="step">
-            <div class="step-icon">4</div>
-        </div>
-    </div>
-</div>
+
 			<!-- end -->
                 <table class="table table-light table-borderless table-hover text-center mb-0">
                   <table class="table table-light table-borderless table-hover text-center mb-0">
@@ -167,7 +204,11 @@ h4 {
 						$t = $quantity * $price;
 						?>
                         <tr>
-                            <td class="align-middle"><img src="<?php echo $image ?>" alt="" style="width: 50px;"></td>
+                            <td class="align-middle">
+                                <div class="product-image">
+                                    <img src="<?php echo $image ?>" alt="<?php echo $item ?>" class="img-fluid">
+                                </div>
+                            </td>
                             <td class="align-middle"><?php echo $item ?></td>
                             <td class="align-middle">&#8369; <?php echo $price ?></td>
                             <td class="align-middle">

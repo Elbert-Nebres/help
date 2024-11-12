@@ -23,6 +23,26 @@ include('./header.php');
 .ck-editor__editable_inline {
     min-height: 200px;
 }
+
+.table img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    padding: 5px;
+}
+
+.table td {
+    vertical-align: middle !important;
+    text-align: center;
+}
+
+.table td:first-child {
+    width: 100px;
+    height: 100px;
+    padding: 10px;
+}
 </style>
               <div class="row">
 
