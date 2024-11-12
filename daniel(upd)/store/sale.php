@@ -80,6 +80,7 @@ include('./header.php');
                         echo '  <td>'.$email.'</td>';
                         echo '  <td><center><input type="button" value="View Purchase Items" class="btn btn-primary" onclick="window.location=\'view_items.php?id='.$user.'&invoice='.$invoice.'\'"></td>';
                         echo '</tr>';
+                        
             }
 					  }
 					  }

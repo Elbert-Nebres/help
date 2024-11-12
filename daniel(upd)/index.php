@@ -53,10 +53,91 @@ include('./header.php');
     </div>
     <!-- Carousel End -->
 
+<!-- Categories Layout -->
+<div class="container-fluid pt-5">
+    <?php
+    include('./connect.php');
+    $categories = $conn->query("SELECT * FROM category");
+    ?>
+    
+    <div class="categories-grid mb-5">
+        <?php
+        while($category = $categories->fetch_assoc()) {
+            $categoryName = $category['category'];
+            ?>
+            <a href="view_shop.php?id=<?php echo urlencode($categoryName); ?>" class="category-box" style="color: #FFFFFF !important; text-decoration: none;">
+                <h3 class="category-title" style="color: #FFFFFF !important;"><?php echo htmlspecialchars($categoryName); ?></h3>
+            </a>
+            <?php
+        }
+        ?>
+    </div>
+</div>
 
+<style>
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 15px;
+    padding: 0 15px;
+}
 
+.category-box {
+    background: #347928;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 60px;
+    border: 2px solid #347928;
+    transition: all 0.3s ease;
+    color: #FFFFFF !important;
+}
 
+.category-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 121, 40, 0.2);
+    background: #2a6320;
+    border-color: #2a6320;
+    color: #FFFFFF !important;
+}
 
+.category-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0;
+    color: #FFFFFF !important;
+}
+
+a.category-box:link,
+a.category-box:visited,
+a.category-box:hover,
+a.category-box:active {
+    color: #FFFFFF !important;
+    text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .categories-grid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 10px;
+        padding: 0 10px;
+    }
+
+    .category-box {
+        padding: 8px;
+        min-height: 50px;
+    }
+
+    .category-title {
+        font-size: 0.9rem;
+        color: #FFFFFF !important;
+    }
+}
+</style>
 
     <!-- Products Start -->
     <div class="container-fluid pt-5 pb-3">
@@ -79,10 +160,9 @@ include('./header.php');
 		  ?>
 		   <div class="col-lg-2 col-md-4 col-sm-6 pb-1">
                 <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src="<?php echo $row['image'] ?>" alt="Product Image">
+                    <div class="product-img position-relative overflow-hidden" style="width: 100%; padding-top: 100%; /* 1:1 aspect ratio */">
+                        <img class="img-fluid position-absolute top-0 left-0" src="<?php echo $row['image'] ?>" alt="Product Image" style="width: 100%; height: 100%; object-fit: cover; top: 0; left: 0;">
                         <div class="product-action">
-                            <!-- <a class="btn btn-outline-dark btn-square" href="add_cart.php?id=<?php echo $row['id'] ?>"><i class="fa fa-shopping-cart"></i></a> -->
                             <a class="btn btn-outline-dark btn-square" href="add_heart.php?id=<?php echo $row['id'] ?>"><i class="far fa-heart"></i></a>
                             <a class="btn btn-outline-dark btn-square" href="details.php?id=<?php echo $row['id'] ?>"><i class="fa fa-search"></i></a>
                         </div>
@@ -170,10 +250,9 @@ include('./header.php');
 		  ?>
 		   <div class="col-lg-2 col-md-4 col-sm-6 pb-1">
                 <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src="<?php echo $row['image'] ?>" alt="">
+                    <div class="product-img position-relative overflow-hidden" style="width: 100%; padding-top: 100%; /* 1:1 aspect ratio */">
+                        <img class="img-fluid position-absolute top-0 left-0" src="<?php echo $row['image'] ?>" alt="" style="width: 100%; height: 100%; object-fit: cover; top: 0; left: 0;">
                         <div class="product-action">
-                            <!-- <a class="btn btn-outline-dark btn-square" href="add_cart.php?id=<?php echo $row['id'] ?>"><i class="fa fa-shopping-cart"></i></a> -->
                             <a class="btn btn-outline-dark btn-square" href="add_heart.php?id=<?php echo $row['id'] ?>"><i class="far fa-heart"></i></a>
                             <a class="btn btn-outline-dark btn-square" href="details.php?id=<?php echo $row['id'] ?>"><i class="fa fa-search"></i></a>
                         </div>

@@ -2,6 +2,125 @@
 include('./header.php');
 ?>
 
+<!-- Add this style section at the top of your file -->
+<style>
+.product-item {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.product-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.product-img {
+    position: relative;
+    width: 100%;
+    height: 200px; /* Fixed height for all product images */
+    overflow: hidden;
+}
+
+.product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Maintains aspect ratio */
+    object-position: center;
+    transition: transform 0.3s ease;
+}
+
+.product-img:hover img {
+    transform: scale(1.05);
+}
+
+.product-action {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.7);
+    opacity: 0;
+    transition: all 0.3s;
+}
+
+.product-action:hover {
+    opacity: 1;
+}
+
+.product-action .btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0 5px;
+    border-radius: 50%;
+    background: white;
+    transition: all 0.3s;
+}
+
+.product-action .btn:hover {
+    background: #347928;
+    color: white;
+}
+
+.text-center {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+}
+
+.text-truncate {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #333;
+    font-weight: 500;
+}
+
+.col-lg-2 {
+    margin-bottom: 20px;
+}
+
+/* Price styling */
+h5 {
+    color: #347928;
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Rating stars */
+.fa-star {
+    color: #FFD700 !important;
+}
+
+.far.fa-star {
+    color: #ddd !important;
+}
+
+/* No results found styling */
+h2 {
+    width: 100%;
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+</style>
+
     <!-- Shop Start -->
     <div class="container-fluid">
         <div class="row px-xl-5">

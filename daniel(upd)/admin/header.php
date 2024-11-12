@@ -108,6 +108,79 @@ while($row=  mysqli_fetch_array($r)) {
   background-color: #2A3F54;
   color: white;
 }
+
+/* Product Image Alignment */
+.product-image-container {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.product-image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+    margin: auto;
+}
+
+/* Table Product Images */
+.table-product-image {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: auto;
+}
+
+.table-product-image img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+}
+
+/* Product Grid Images */
+.product-grid-image {
+    width: 100%;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    overflow: hidden;
+    padding: 15px;
+}
+
+.product-grid-image img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .product-image-container {
+        height: 150px;
+    }
+    
+    .table-product-image {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .product-grid-image {
+        height: 200px;
+    }
+}
 </style>
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">

@@ -1,4 +1,3 @@
-
 <?php
 include('./header.php');
 $id = $_GET['id'];
@@ -114,6 +113,180 @@ textarea {
 .btn-group .btn.cancel:hover {
 	background: var(--light);
 }
+
+/* Quantity Input Group */
+.quantity {
+    display: flex;
+    align-items: stretch;
+    height: 40px;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 2px solid #fff;
+}
+
+/* Input Field */
+.quantity input {
+    width: 50px;
+    text-align: center;
+    border: none;
+    background: #fff !important;
+    color: #347928 !important;
+    font-weight: 600;
+    padding: 0;
+    margin: 0;
+    -moz-appearance: textfield; /* Remove number spinners in Firefox */
+}
+
+/* Remove number spinners in Chrome/Safari/Edge */
+.quantity input::-webkit-outer-spin-button,
+.quantity input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Plus/Minus Buttons */
+.btn-minus,
+.btn-plus {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #347928 !important;
+    border: none !important;
+    color: #fff !important;
+    cursor: pointer;
+}
+
+.btn-minus:hover,
+.btn-plus:hover {
+    background: #2a6320 !important;
+}
+
+/* Icons inside buttons */
+.btn-minus i,
+.btn-plus i {
+    font-size: 14px;
+    color: #fff;
+}
+
+/* Container alignment */
+.d-flex.align-items-center.mb-4.pt-2 {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Add to Cart Button */
+.btn.btn-primary.px-3 {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff !important;
+    color: #347928 !important;
+    border: 2px solid #fff !important;
+    font-weight: 600;
+}
+
+.btn.btn-primary.px-3:hover {
+    background: rgba(255,255,255,0.9) !important;
+}
+
+/* You May Also Like Section */
+.related-carousel .product-item {
+    margin: 10px;
+    background: #fff !important;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: none !important;
+}
+
+/* Product Image Container */
+.product-img {
+    width: 100%;
+    height: 250px;
+    position: relative;
+    overflow: hidden;
+    background: #fff !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none !important;
+}
+
+/* Product Image */
+.product-img img {
+    width: 80% !important;
+    height: 80% !important;
+    object-fit: contain;
+    padding: 10px;
+    display: block;
+    margin: auto;
+}
+
+/* Product Details */
+.text-center.py-4 {
+    padding: 15px !important;
+    background: #fff !important;
+    color: #333 !important;
+    border: none !important;
+}
+
+/* Product Title */
+.h6.text-decoration-none.text-truncate {
+    color: #333 !important;
+    border: none !important;
+}
+
+/* Price */
+.d-flex.align-items-center.justify-content-center.mt-2 h5 {
+    color: #347928 !important;
+    border: none !important;
+}
+
+/* Stars */
+.fa-star {
+    color: #347928 !important;
+}
+
+/* Product Action Buttons */
+.product-action {
+    background: rgba(255, 255, 255, 0.9) !important;
+}
+
+.btn-outline-dark {
+    background: #347928 !important;
+    color: #fff !important;
+}
+
+.btn-outline-dark:hover {
+    background: #2a6320 !important;
+}
+
+/* Remove any remaining borders */
+.bg-light {
+    border: none !important;
+    background: #fff !important;
+}
+
+.overflow-hidden {
+    border: none !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .product-img {
+        height: 200px;
+    }
+    
+    .product-img img {
+        width: 70% !important;
+        height: 70% !important;
+    }
+}
 </style>
     <!-- Shop Detail Start -->
     <div class="container-fluid pb-5">
@@ -223,7 +396,7 @@ textarea {
                             </div>
                     </div>
                     <div class="d-flex align-items-center mb-4 pt-2">
-                        <div class="input-group quantity mr-3" style="width: 130px;">
+                        <div class="quantity mr-3">
                             <div class="input-group-btn">
                                 <button class="btn btn-primary btn-minus" type="button">
                                     <i class="fa fa-minus"></i>
@@ -409,7 +582,7 @@ allStar.forEach((item, idx)=> {
                                 <small class="fa fa-star text-primary mr-1"></small>
                                 <small class="fa fa-star text-primary mr-1"></small>
                                 <small class="fa fa-star text-primary mr-1"></small>
-                                <small>(99)</small>
+                            
                             </div>
                         </div>
                     </div>
