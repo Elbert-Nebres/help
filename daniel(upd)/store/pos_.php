@@ -151,15 +151,9 @@
 
 <div class="right_col" role="main">
     <div class="main-content">
-        <!-- Category Filter -->
+        <!-- Search Filter -->
         <div class="category-filter">
-            <select class="form-control" id="categoryFilter" onchange="filterProducts()">
-                <option value="">All Categories</option>
-                <option>Processors</option>
-                <option>Motherboards</option>
-                <option>CPU Fans</option>
-                <!-- Add other categories -->
-            </select>
+            <input type="text" class="form-control" id="productSearch" placeholder="Search products...">
         </div>
 
         <!-- Products Grid -->
@@ -169,7 +163,8 @@
             $result = $conn->query("SELECT * FROM product WHERE quantity > 0");
             while($row = $result->fetch_assoc()) {
                 ?>
-                <div class="product-card" data-category="<?php echo $row['category']; ?>">
+                <div class="product-card" data-name="<?php echo strtolower($row['item']); ?>" 
+                                       data-category="<?php echo strtolower($row['category']); ?>">
                     <img src="<?php echo $row['image']; ?>" class="product-image" alt="<?php echo $row['item']; ?>">
                     <div class="product-info">
                         <div class="product-name"><?php echo $row['item']; ?></div>
@@ -299,6 +294,22 @@ function updateCartDisplay() {
 document.addEventListener('DOMContentLoaded', function() {
     updateCartDisplay();
 });
+
+document.getElementById('productSearch').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const products = document.querySelectorAll('.product-card');
+    
+    products.forEach(product => {
+        const name = product.getAttribute('data-name');
+        const category = product.getAttribute('data-category');
+        
+        if (name.includes(searchTerm) || category.includes(searchTerm)) {
+            product.style.display = '';
+        } else {
+            product.style.display = 'none';
+        }
+    });
+});
 </script>
 
-<?php include('./footer.php'); ?>
+
