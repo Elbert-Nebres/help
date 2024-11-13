@@ -53,11 +53,11 @@ include('./header.php');
                          <table id="datatable1" class="table table-striped table-bordered" style="width:100%">
                          <thead>
                         <tr>
-                          <th width="5%">Image</th>
+                          <th width="15%">Image</th>
                           <th>Product Name</th>
                           <th>Category</th>
                           <th>Quantity</th>
-                          <th><center>Price</th>
+                          <th width="10%"><center>Price</th>
                           <th width="30%"><center>Description</th>
                           <th width="10%"><center>Action</th>
                         </tr>
@@ -104,7 +104,7 @@ include('./header.php');
                       <td>' . htmlspecialchars($row['category']) . '</td>
                       <td>' . $quantity . '</td>
                       <td class="text-right">&#x20B1; ' . number_format($row['price'], 2) . '</td>
-                      <td>' . htmlspecialchars($description) . '</td>
+                         echo '  <td>'.substr_replace($row['description'], "...", 100).'</td>';
                       <td class="text-center">
                           <div class="btn-group-vertical w-100">
                               <a href="view_transaction.php?id=' . $id . '&item=' . urlencode($row['item']) . '" 

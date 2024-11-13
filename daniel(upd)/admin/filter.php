@@ -37,51 +37,53 @@ include('./header.php');
                     <div class="x_content">
                       <div class="dashboard-widget-content">
 					  
-					  <div class="row" style="margin-top:20px">
-  <div class="col-sm-4">
-    <div class="card" style="background:#C0EBA6">
-      <div class="card-body">
-        <h5  style="color:#000" class="card-title">Filter by Date</h5>
-		  <form action="filter.php" method="POST">
-		  Select Date:<br>
-		  <input type="date" name="date" class="form-control" required>
-		  <br>
-		  <input type="submit" name="by_date" class="btn btn-primary">
-		  </form>
-      </div>
+					  <div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Filter by Date</h5>
+                <form action="filter.php" method="POST">
+                    <div class="form-group">
+                        <input type="date" name="date" class="form-control" required>
+                    </div>
+                    <button type="submit" name="by_date" class="btn btn-primary">Apply Filter</button>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="col-sm-4">
-    <div class="card" style="background:#C0EBA6">
-      <div class="card-body">
-        <h5  style="color:#000" class="card-title">Filter by Month</h5>
-		  <form action="filter.php" method="POST">
-		  <table width="100%">
-			<tr>
-				<td width="50%">Start Month<input type="month" name="start_date" class="form-control" required></td>
-				<td width="50%">End Month<input type="month" name="end_date" class="form-control" required></td>
-			</tr>
-		  </table>
-		  
-		  <br>
-		  <input type="submit" name="by_month" class="btn btn-primary">
-		  </form>
-      </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Filter by Month</h5>
+                <form action="filter.php" method="POST">
+                    <div class="form-group">
+                        <label>Start Month</label>
+                        <input type="month" name="start_date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>End Month</label>
+                        <input type="month" name="end_date" class="form-control" required>
+                    </div>
+                    <button type="submit" name="by_month" class="btn btn-primary">Apply Filter</button>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="col-sm-4">
-    <div class="card" style="background:#C0EBA6">
-      <div class="card-body">
-        <h5 style="color:#000" class="card-title">Filter by Year</h5>
-		  <form action="filter.php" method="POST">
-		  Enter Year
-		  <input type="number" name="year" class="form-control" required>
-		  <br>
-		  <input type="submit" name="by_year" class="btn btn-primary">
-		  </form>
-      </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Filter by Year</h5>
+                <form action="filter.php" method="POST">
+                    <div class="form-group">
+                        <input type="number" name="year" class="form-control" placeholder="Enter Year" required>
+                    </div>
+                    <button type="submit" name="by_year" class="btn btn-primary">Apply Filter</button>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 					  
 					  

@@ -121,7 +121,10 @@ $username =$_SESSION['username'];
         <div class="col-md-3 left_col" style="background:#347928 !important;">
           <div class="left_col scroll-view" style="background:#347928 !important;width:100%">
             <div class="navbar nav_title" style="border: 0;;width:100%;border:0px solid red;height:150px;background:#347928 !important">
-              <a href="index.html" class="site_title"><img src="../img/logo.png" style="width:50px"> <span>Sales Account</span></a>
+              <a href="index.php" class="site_title">
+                <img src="../img/logo.png" style="width:50px; cursor: pointer;"> 
+                <span style="cursor: pointer;">Sales Account</span>
+              </a>
             </div>
 
 

@@ -21,19 +21,27 @@ $username = '';
 
 <?php
 include('../connect.php');
-$username =$_SESSION['username'];
-$result2 = $conn->query("SELECT * FROM product ");
-$count2 = $result2->num_rows;
-$sales = 0;
+$username = $_SESSION['username'];
 
-$result1 = $conn->query("SELECT * FROM product ");
-while($row1 = $result1->fetch_assoc()) {
-  $id = $row1['id'];
-	$result2 = $conn->query("SELECT * FROM cart WHERE status = 'Approved' AND product ='$id'");
-	while($row2 = $result2->fetch_assoc()) {
-			$sales +=1;
-	}  
-}
+// Get product count more efficiently
+$count2 = $conn->query("SELECT COUNT(*) as count FROM product")->fetch_assoc()['count'];
+
+// Calculate sales more efficiently with a single query
+$sales = $conn->query("
+    SELECT COUNT(*) as total_sales 
+    FROM cart 
+    WHERE status = 'Approved'
+")->fetch_assoc()['total_sales'];
+
+// Remove the inefficient nested loops
+// $result1 = $conn->query("SELECT * FROM product ");
+// while($row1 = $result1->fetch_assoc()) {
+//   $id = $row1['id'];
+//   $result2 = $conn->query("SELECT * FROM cart WHERE status = 'Approved' AND product ='$id'");
+//   while($row2 = $result2->fetch_assoc()) {
+//       $sales +=1;
+//   }  
+// }
 ?>
 
 
@@ -56,7 +64,7 @@ while($row1 = $result1->fetch_assoc()) {
     </div>
   </div>
   <div class="col-sm-3">
-    <div class="card" style="background:#C0EBA6">
+    <div class="card" style="background:#C0EBA6; cursor: pointer;" onclick="window.location.href='index.php'">
       <div class="card-body">
 	  <h1  style="color:#000"><i class="fa-solid fa-square-poll-vertical"></i>&nbsp;<?php echo $sales ?></h1>
         <h5  style="color:#000" class="card-title">Total Number of Sales</h5>
@@ -73,37 +81,26 @@ while($row1 = $result1->fetch_assoc()) {
 		<th>Quantity</th>
 	</thead>
 	<?php
-	$username = $_SESSION['username'];
-	$result = mysqli_query($conn, "SELECT status,username,product,SUM(quantity) as quan FROM cart WHERE status = 'Approved' and username = '$username' GROUP BY product ORDER BY quan DESC");
+	// More efficient query using JOIN and GROUP BY
+	$query = "
+		SELECT 
+			p.item as name,
+			SUM(c.quantity) as total_quantity
+		FROM cart c
+		JOIN product p ON p.id = c.product
+		WHERE c.status = 'Approved'
+		GROUP BY c.product, p.item
+		ORDER BY total_quantity DESC
+	";
+	
+	$result = mysqli_query($conn, $query);
 	while($row = mysqli_fetch_array($result)) {
-		$product =$row['product'];
-	$result1 = mysqli_query($conn, "SELECT * FROM product WHERE id = '$product'");
-	while($row1 = mysqli_fetch_array($result1)) {
-			$name = $row1['item'];
-	}
 		echo '<tr>';
-		echo '<td>'.$name.'</td>';
-		echo '<td>'.$row['quan'].'</td>';
+		echo '<td>'.$row['name'].'</td>';
+		echo '<td>'.$row['total_quantity'].'</td>';
 		echo '</tr>';
 	}
 	?>
-	<!--
-	<?php
-	$username = $_SESSION['username'];
-	$result = mysqli_query($conn, "SELECT cart.status,cart.username,cart.quantity,cart.product,SUM(cart.quantity) as quan FROM cart JOIN product on product.id  = cart.product WHERE cart.status = 'Approved' AND cart.username = '$username' GROUP BY category ORDER BY quan DESC");
-	while($row = mysqli_fetch_array($result)) {
-		$product =$row['product'];
-	$result1 = mysqli_query($conn, "SELECT * FROM product WHERE id = '$product'");
-	while($row1 = mysqli_fetch_array($result1)) {
-			$name = $row1['category'];
-	}
-		echo '<tr>';
-		echo '<td>'.$name.'</td>';
-		echo '<td>'.$row['quan'].'</td>';
-		echo '</tr>';
-	}
-	?>
-	-->
 </table>
 
 		

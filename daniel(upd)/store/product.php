@@ -41,15 +41,14 @@ include('./header.php');
                        <!-- <input type="button" value="Add Product" class="btn btn-primary" id="myBtn">    -->
                          <table id="datatable1" class="table table-striped table-bordered" style="width:100%">
                       <thead>
-                        <tr>
-                          <th width="5%">Image</th>
+                      <tr>
+                          <th width="15%">Image</th>
                           <th>Product Name</th>
                           <th>Category</th>
                           <th>Quantity</th>
-                          <th><center>Price</th>
+                          <th width="10%"><center>Price</th>
                           <th width="30%"><center>Description</th>
                           <th width="10%"><center>Action</th>
-                        </tr>
                       </thead>
                       <tbody>
 					<?php
